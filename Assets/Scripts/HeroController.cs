@@ -5,11 +5,16 @@ using UnityEngine;
 public class HeroController : MonoBehaviour
 {
     public float speed = 5;
+    public int health = 3;
+
 
     public KeyCode KeyLeft  = KeyCode.A;
     public KeyCode KeyRight = KeyCode.D;
     public KeyCode KeyUp    = KeyCode.W;
     public KeyCode KeyDown  = KeyCode.S;
+
+    public Rigidbody2D body;
+    public Animator miAnimacion;
 
     // Start is called before the first frame update
     void Start()
@@ -18,18 +23,29 @@ public class HeroController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         float distance = speed * Time.deltaTime;
 
-        Vector3 desiredPosition = transform.position;
+        Vector3 desiredMovement = new Vector3(0,0,0);
 
-        if (Input.GetKey(KeyLeft))  desiredPosition.x -= distance;
-        if (Input.GetKey(KeyRight)) desiredPosition.x += distance;
-        if (Input.GetKey(KeyDown))  desiredPosition.y -= distance;
-        if (Input.GetKey(KeyUp))    desiredPosition.y += distance;
+        if (Input.GetKey(KeyLeft))  desiredMovement.x -= distance;
+        if (Input.GetKey(KeyRight)) desiredMovement.x += distance;
+        if (Input.GetKey(KeyDown))  desiredMovement.y -= distance;
+        if (Input.GetKey(KeyUp))    desiredMovement.y += distance;
 
-        transform.position = desiredPosition;
+        
+        body.MovePosition(transform.position + desiredMovement);
 
+    }
+
+    public void OnDamageReceive(int amount)
+    {
+        
+        this.health -= amount;
+        if (health <= 0)
+        {
+            miAnimacion.Play("AnimDie");
+        }
     }
 }
